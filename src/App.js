@@ -1,94 +1,80 @@
-import React, { useState } from "react";
-import { addPlant } from "./API";
+import React, { useState, useEffect } from "react";
+import { getPlants, updatePlant, deletePlant } from "./API";
 import styled from "styled-components";
 
 export default function App() {
-  const [sent, setSent] = useState(false);
-  const [first, updateFirst] = useState("");
-  const [last, updateLast] = useState("");
-  const [postcode, updatePostCode] = useState("");
-  const [age, updateAge] = useState("");
-  const [sex, updateSex] = useState(1);
+  const [plants, setPlants] = useState([]);
+  const [notification, setNotification] = useState(null);
+  const handleGetPlant = async () => {
+    setPlants(await getPlants());
+  };
 
-  const sendPlant = async () => {
-    console.log(await addPlant({ first, last, postcode, age, sex }));
-    updateFirst("");
-    updateLast("");
-    updatePostCode("");
-    updateAge("");
-    updateSex(1);
-    setSent(true);
+  useEffect(() => {
+    handleGetPlant();
+  }, []);
+
+  const handleSendNotification = (notification) => {
+    setNotification(notification);
     setTimeout(() => {
-      setSent(false);
+      setNotification(null);
     }, 5000);
   };
 
-  const handleFirst = ({ target }) => {
-    updateFirst(target.value);
+  const handleUpdatePlant = async (id) => {
+    await updatePlant(id);
+    handleGetPlant();
+    handleSendNotification("Plant Set to Used");
   };
-  const handleLast = ({ target }) => {
-    updateLast(target.value);
-  };
-  const handlePostCode = ({ target }) => {
-    updatePostCode(target.value);
-  };
-  const handleAge = ({ target }) => {
-    updateAge(target.value);
-  };
-  const handleSex = ({ target }) => {
-    updateSex(target.value);
+
+  const handleDeletePlant = async (id) => {
+    await deletePlant(id);
+    handleGetPlant();
+    handleSendNotification("Plant Deleted");
   };
 
   return (
     <Wrap>
-      <H1>Submit a Plant</H1>
-      <Span sent={sent}>Plant Submitted</Span>
-      <Input
-        type="text"
-        value={first}
-        onChange={handleFirst}
-        placeholder="First Name"
-      />
-      <Input
-        type="text"
-        value={last}
-        onChange={handleLast}
-        placeholder="Last Name"
-      />
-      <Input
-        type="text"
-        value={postcode}
-        onChange={handlePostCode}
-        placeholder="Postal Code"
-      />
-      <Input type="number" value={age} onChange={handleAge} placeholder="Age" />
-      <Select value={sex} onChange={handleSex}>
-        <option value={1}>Male</option>
-        <option value={2}>Female</option>
-      </Select>
-      <Input type="submit" onClick={sendPlant} value="Submit" />
+      <H1>Plants</H1>
+      <Span>{notification}</Span>
+      <Table cellSpacing={0}>
+        <thead>
+          <Tr>
+            <Td>First Name</Td>
+            <Td>Last Name</Td>
+            <Td>Postcode</Td>
+            <Td>Age</Td>
+            <Td>Sex</Td>
+            <Td>Action</Td>
+          </Tr>
+        </thead>
+        <tbody>
+          {plants
+            .sort(({ status }) => (status === 1 ? -1 : 1))
+            .map(({ id, first, last, postcode, age, sex, status }, key) => {
+              return (
+                <Tr className={status === 1 ? "unused" : "used"} key={key}>
+                  <Td>{first}</Td>
+                  <Td>{last}</Td>
+                  <Td>{postcode}</Td>
+                  <Td>{age}</Td>
+                  <Td>{sex === 1 ? "Male" : "Female"}</Td>
+                  <Td>
+                    {status === 1 && (
+                      <Button onClick={() => handleUpdatePlant(id)}>Use</Button>
+                    )}
+                    <Button onClick={() => handleDeletePlant(id)}>
+                      Delete
+                    </Button>
+                  </Td>
+                </Tr>
+              );
+            })}
+        </tbody>
+      </Table>
     </Wrap>
   );
 }
 
-const H1 = styled.h1`
-  color: white;
-  font-weight: bold;
-`;
-
-const Span = styled.span`
-  color: white;
-  background: darkgreen;
-  padding: 10px;
-  display: ${({ sent }) => (sent ? "block" : "none")};
-`;
-const Select = styled.select`
-  padding: 5px;
-`;
-
-const Input = styled.input`
-  padding: 5px;
-`;
 const Wrap = styled.div`
   display: flex;
   align-content: center;
@@ -96,4 +82,40 @@ const Wrap = styled.div`
   flex-direction: column;
   margin: auto;
   width: 80%;
+`;
+
+const Span = styled.span`
+  background: green;
+  padding: 5px;
+  display: ${({ notification }) => (notification ? "block" : "none")};
+`;
+
+const H1 = styled.h1`
+  color: white;
+  font-weight: bold;
+`;
+
+const Table = styled.table``;
+
+const Tr = styled.tr`
+  color: white;
+  background: #333;
+  display: column;
+  text-align: center;
+  &:nth-child(odd) {
+    background: white;
+    color: black;
+  }
+  &.used {
+    background: grey;
+    color: darkgray;
+  }
+`;
+
+const Td = styled.td`
+  border: 1px solid black;
+`;
+
+const Button = styled.button`
+  margin: 3px;
 `;
