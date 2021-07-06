@@ -60,7 +60,7 @@ export default function AddPlant({ handleGetPlants }) {
         type="text"
         value={postcode}
         onChange={handlePostCode}
-        placeholder="Postal Code"
+        placeholder="Area"
       />
       <Input type="number" value={age} onChange={handleAge} placeholder="Age" />
       <Select value={sex} onChange={handleSex}>

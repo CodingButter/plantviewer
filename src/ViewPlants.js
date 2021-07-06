@@ -33,7 +33,7 @@ export default function ViewPlants({ plants, handleGetPlants }) {
           <Tr>
             <Td>First Name</Td>
             <Td>Last Name</Td>
-            <Td>Postcode</Td>
+            <Td>Area</Td>
             <Td>Age</Td>
             <Td>Sex</Td>
             <Td>Action</Td>
