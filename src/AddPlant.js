@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { addPlant } from "./API";
 import styled from "styled-components";
 
@@ -11,23 +11,30 @@ export default function AddPlant({ handleGetPlants }) {
   const [phone, updatePhone] = useState("");
   const [age, updateAge] = useState("");
   const [sex, updateSex] = useState(1);
-
+  const handleSetFocus = () => {
+    document.querySelector("[id=firstname]").focus();
+  };
+  useEffect(() => {
+    handleSetFocus();
+  }, []);
   const sendPlant = async () => {
-    console.log(
-      await addPlant({ first, last, street, postcode, phone, age, sex })
-    );
-    updateFirst("");
-    updateLast("");
-    updateStreet("");
-    updatePostCode("");
-    updatePhone("");
-    updateAge("");
-    updateSex(1);
-    setSent(true);
-    handleGetPlants();
-    setTimeout(() => {
-      setSent(false);
-    }, 5000);
+    if (first && last && street && postcode && phone && age && sex) {
+      await addPlant({ first, last, street, postcode, phone, age, sex });
+
+      updateFirst("");
+      updateLast("");
+      updateStreet("");
+      updatePostCode("");
+      updatePhone("");
+      updateAge("");
+      updateSex(1);
+      setSent(true);
+      handleGetPlants();
+      setTimeout(() => {
+        setSent(false);
+      }, 5000);
+    }
+    handleSetFocus();
   };
 
   const handleFirst = ({ target }) => {
@@ -57,6 +64,7 @@ export default function AddPlant({ handleGetPlants }) {
       <H1>Submit a Plant</H1>
       <Span sent={sent}>Plant Submitted</Span>
       <Input
+        id="firstname"
         type="text"
         value={first}
         onChange={handleFirst}
@@ -81,7 +89,8 @@ export default function AddPlant({ handleGetPlants }) {
         placeholder="Postal Code"
       />
       <Input
-        type="text"
+        type="tel"
+        pattern="[0-9]{3}"
         value={phone}
         onChange={handlePhone}
         placeholder="Phone Number"
@@ -113,6 +122,15 @@ const Select = styled.select`
 
 const Input = styled.input`
   padding: 5px;
+  &[type="submit"] {
+    background: purple;
+    color: #ccc;
+    font-weight: bold;
+    &:hover {
+      background: #333;
+      color: white;
+    }
+  }
 `;
 const Wrap = styled.div`
   display: flex;
