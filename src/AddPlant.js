@@ -6,15 +6,21 @@ export default function AddPlant({ handleGetPlants }) {
   const [sent, setSent] = useState(false);
   const [first, updateFirst] = useState("");
   const [last, updateLast] = useState("");
+  const [street, updateStreet] = useState("");
   const [postcode, updatePostCode] = useState("");
+  const [phone, updatePhone] = useState("");
   const [age, updateAge] = useState("");
   const [sex, updateSex] = useState(1);
 
   const sendPlant = async () => {
-    await addPlant({ first, last, postcode, age, sex });
+    console.log(
+      await addPlant({ first, last, street, postcode, phone, age, sex })
+    );
     updateFirst("");
     updateLast("");
+    updateStreet("");
     updatePostCode("");
+    updatePhone("");
     updateAge("");
     updateSex(1);
     setSent(true);
@@ -29,6 +35,12 @@ export default function AddPlant({ handleGetPlants }) {
   };
   const handleLast = ({ target }) => {
     updateLast(target.value);
+  };
+  const handleStreet = ({ target }) => {
+    updateStreet(target.value);
+  };
+  const handlePhone = ({ target }) => {
+    updatePhone(target.value);
   };
   const handlePostCode = ({ target }) => {
     updatePostCode(target.value);
@@ -58,9 +70,21 @@ export default function AddPlant({ handleGetPlants }) {
       />
       <Input
         type="text"
+        value={street}
+        onChange={handleStreet}
+        placeholder="Street"
+      />
+      <Input
+        type="text"
         value={postcode}
         onChange={handlePostCode}
-        placeholder="Area"
+        placeholder="Postal Code"
+      />
+      <Input
+        type="text"
+        value={phone}
+        onChange={handlePhone}
+        placeholder="Phone Number"
       />
       <Input type="number" value={age} onChange={handleAge} placeholder="Age" />
       <Select value={sex} onChange={handleSex}>

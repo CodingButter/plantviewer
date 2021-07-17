@@ -33,7 +33,9 @@ export default function ViewPlants({ plants, handleGetPlants }) {
           <Tr>
             <Td>First Name</Td>
             <Td>Last Name</Td>
-            <Td>Area</Td>
+            <Td>Street</Td>
+            <Td>Postal Code</Td>
+            <Td>Phone Number</Td>
             <Td>Age</Td>
             <Td>Sex</Td>
             <Td>Action</Td>
@@ -42,25 +44,34 @@ export default function ViewPlants({ plants, handleGetPlants }) {
         <tbody>
           {plants
             .sort(({ status }) => (status === 1 ? -1 : 1))
-            .map(({ id, first, last, postcode, age, sex, status }, key) => {
-              return (
-                <Tr className={status === 1 ? "unused" : "used"} key={key}>
-                  <Td>{first}</Td>
-                  <Td>{last}</Td>
-                  <Td>{postcode}</Td>
-                  <Td>{age}</Td>
-                  <Td>{sex === 1 ? "Male" : "Female"}</Td>
-                  <Td>
-                    {status === 1 && (
-                      <Button onClick={() => handleUpdatePlant(id)}>Use</Button>
-                    )}
-                    <Button onClick={() => handleDeletePlant(id)}>
-                      Delete
-                    </Button>
-                  </Td>
-                </Tr>
-              );
-            })}
+            .map(
+              (
+                { id, first, last, street, postcode, phone, age, sex, status },
+                key
+              ) => {
+                return (
+                  <Tr className={status === 1 ? "unused" : "used"} key={key}>
+                    <Td>{first}</Td>
+                    <Td>{last}</Td>
+                    <Td>{street}</Td>
+                    <Td>{postcode}</Td>
+                    <Td>{phone}</Td>
+                    <Td>{age}</Td>
+                    <Td>{sex === 1 ? "Male" : "Female"}</Td>
+                    <Td>
+                      {status === 1 && (
+                        <Button onClick={() => handleUpdatePlant(id)}>
+                          Use
+                        </Button>
+                      )}
+                      <Button onClick={() => handleDeletePlant(id)}>
+                        Delete
+                      </Button>
+                    </Td>
+                  </Tr>
+                );
+              }
+            )}
         </tbody>
       </Table>
     </Wrap>
